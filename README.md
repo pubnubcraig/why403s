@@ -17,9 +17,10 @@ A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into 
 git clone git@github.com:PubNubDevelopers/why403s.git
 cd why403s
 npm install
+```
 
 ## Usage
 
 ```bash
 node why403.js --subkey YOUR_SUB_KEY [--file input.csv] [--debug]
-
+```
