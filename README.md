@@ -11,6 +11,12 @@ A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into 
 - 📊 Outputs aligned summary with emoji-tagged root causes
 - 🐞 Optional `--debug` mode for full token and request trace
 
+## Installation
+
+git clone git@github.com:PubNubDevelopers/why403s.git
+cd why403s
+npm install
+
 ## Usage
 
 ```bash
