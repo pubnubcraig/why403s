@@ -8,7 +8,8 @@ A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into 
 - 📡 Checks channel and channel group permissions
 - ⏰ Detects token expiration and TTL window violations
 - 🙅 Identifies UUID mismatches between authorized uuid in token and the uuid from the request request
-- 📊 Outputs aligned summary with emoji-tagged root causes
+- 📑 Outputs 403 root cause reason per log line in a separate file
+- 📊 Outputs aligned summary with emoji-tagged root causes to the console
 - 🐞 Optional `--debug` mode for full token and request trace
 
 ## Installation
@@ -23,7 +24,7 @@ npm install
 
 ### Inputs
 1. subkey that was used to get server logs
-2. the server log file using the following minimal query
+2. the server log file using the following minimal queries (per API)
 ```sql
 -- subscribe
 select log_ts, ts, channels, 
@@ -49,3 +50,5 @@ WHERE yyyy = '2025' and mm = '07' and dd = '12' -- and hh = '15'
 ```bash
 node why403.js --subkey YOUR_SUB_KEY [--file input.csv] [--debug]
 ```
+_default log lines input file is "logs.csv"_
+
