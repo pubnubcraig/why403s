@@ -13,6 +13,7 @@ A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into 
 
 ## Installation
 
+```bash
 git clone git@github.com:PubNubDevelopers/why403s.git
 cd why403s
 npm install
