@@ -1,6 +1,6 @@
-# Why403 Analyzer
+# Why403s Log Lines Analyzer
 
-A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into token scope mismatches, expired credentials, and missing read permissions.
+A CLI tool to analyze PubNub 403 Subscribe API failures with deep insights into token scope mismatches, expired credentials, and missing channel and channel group permissions.
 
 ## Features
 
