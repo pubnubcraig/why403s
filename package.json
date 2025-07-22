@@ -1,0 +1,19 @@
+{
+  "name": "why403",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Craig Conover <craig@pubnub.com>",
+  "license": "MIT",
+  "dependencies": {
+    "csv-parser": "^3.2.0",
+    "dayjs": "^1.11.13",
+    "fs": "*",
+    "pubnub": "^9.8.1",
+    "string-width": "^4.2.3"
+  }
+}
