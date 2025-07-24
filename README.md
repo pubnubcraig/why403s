@@ -25,9 +25,16 @@ npm install
 ### Inputs
 1. subkey that was used to get server logs
 2. the server log file using the following minimal queries (per API)
+
+The `api` column must be included to indicate which permission needs to be checked. Currently works for the following PubNub APIs:
+- publish
+- subscribe
+- presence
+- history
+
 ```sql
 -- subscribe
-select log_ts, ts, channels, 
+select api, log_ts, ts, channels, 
   coalesce(try(query_params['channel-group']), '') as channel_groups,  
   coalesce(try(query_params['uuid']), '') as uuid, 
   coalesce(try(query_params['auth']), '') as authToken
@@ -37,7 +44,7 @@ WHERE yyyy = '2025' and mm = '07' and dd = '12' -- and hh = '15'
   and sur = 1
 
 -- publish
-select log_ts, ts, channels, 
+select api, log_ts, ts, channels, 
   coalesce(try(query_params['channel-group']), '') as channel_groups,  
   coalesce(try(query_params['uuid']), '') as uuid, 
   coalesce(try(query_params['auth']), '') as authToken
