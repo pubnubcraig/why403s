@@ -52,6 +52,7 @@ fs.createReadStream(inputPath)
       const logTs = dayjs.utc(row.log_ts);
       const uuid = row.uuid;
       const authToken = row.authToken;
+      const api = (row.api || "").toLowerCase();
 
       const token = pubnub.parseToken(authToken);
       const ttl = token.ttl;
@@ -75,6 +76,14 @@ fs.createReadStream(inputPath)
 
       let rootCause = "Unknown";
 
+      // Define permission rules per API
+      const apiRules = {
+        subscribe: { channels: "read", groups: "read" },
+        publish:   { channels: "write" },
+        history:   { channels: "read" },
+        presence:  { channels: "read" }
+      };
+
       if (!issuedAt.isValid() || !expiresAt.isValid()) {
         rootCause = "🧨 Token parse error";
       } else if (logTs.isAfter(expiresAt)) {
@@ -82,24 +91,34 @@ fs.createReadStream(inputPath)
       } else if (tokenUuid && tokenUuid !== uuid) {
         rootCause = "🙅 UUID mismatch";
       } else {
-        const missingChannel = requestedChannels.find((ch) => {
-          if (!channels.hasOwnProperty(ch)) return true;
-          if (channels[ch].read !== true) return true;
-          return false;
-        });
+        const rule = apiRules[api];
 
-        if (missingChannel) {
-          rootCause = "📡 Missing READ permission on channel";
+        if (!rule) {
+          rootCause = `❓ Unsupported API: ${api}`;
         } else {
-          const missingGroup = requestedGroups.find((grp) => {
-            if (!groups.hasOwnProperty(grp)) return true;
-            if (groups[grp].read !== true) return true;
-            return false;
-          });
+          let permissionMissing = false;
 
-          if (missingGroup) {
-            rootCause = "🧺 Missing READ permission on group";
-          } else {
+          if (rule.channels && requestedChannels.length > 0) {
+            permissionMissing = requestedChannels.some((ch) => {
+              const perms = channels[ch];
+              return !perms || perms[rule.channels] !== true;
+            });
+            if (permissionMissing) {
+              rootCause = `📡 Missing ${rule.channels.toUpperCase()} permission on channel`;
+            }
+          }
+
+          if (!permissionMissing && rule.groups && requestedGroups.length > 0) {
+            permissionMissing = requestedGroups.some((grp) => {
+              const perms = groups[grp];
+              return !perms || perms[rule.groups] !== true;
+            });
+            if (permissionMissing) {
+              rootCause = `🧺 Missing ${rule.groups.toUpperCase()} permission on group`;
+            }
+          }
+
+          if (!permissionMissing) {
             rootCause = "✅ Token appears valid – investigate infrastructure";
           }
         }
@@ -150,7 +169,7 @@ fs.createReadStream(inputPath)
 
     const indent = "   ";
     const header = "📊 Root Cause Summary:";
-    const paddedHeader = header.padEnd(maxReasonLength, " "); // ✅ No +indent.length
+    const paddedHeader = header.padEnd(maxReasonLength, " ");
     const paddedTotal = String(totalIssues).padStart(maxCountLength, " ");
     console.log(`${indent}${paddedHeader} : ${paddedTotal}`);
 
@@ -161,5 +180,4 @@ fs.createReadStream(inputPath)
       const paddedCount = String(count).padStart(maxCountLength, " ");
       console.log(`${indent}${paddedReason} : ${paddedCount}`);
     });
-
   });
